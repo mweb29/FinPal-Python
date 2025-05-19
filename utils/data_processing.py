@@ -60,7 +60,13 @@ def calculate_taxes(gross_income, state):
     state_tax = apply_brackets(gross_income, state_brackets)
     total_tax = federal_tax + state_tax
     net_income = gross_income - total_tax
-    return net_income
+    
+    return {
+        "net_income": net_income,
+        "federal_tax": federal_tax,
+        "state_tax": state_tax,
+        "total_tax": total_tax
+    }
 
 def parse_bank_statement(file):
     """Assumes a simple CSV with at least columns: Date, Amount, Description."""
