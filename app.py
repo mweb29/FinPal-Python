@@ -10,19 +10,29 @@ st.set_page_config(page_title="FinPal Budget App", layout="wide")
 st.title("FinPal - Gamified Budget Tracker")
 
 # Initialize session state variables if not already set
-if "income" not in st.session_state:
-    st.session_state.income = 0
+if "annual_income" not in st.session_state:
+    st.session_state.annual_income = 0
 if "expenses" not in st.session_state:
     st.session_state.expenses = pd.DataFrame(columns=["Date", "Amount", "Category", "Description"])
 if "budget" not in st.session_state:
     st.session_state.budget = {}
 
-st.sidebar.header("Monthly Income & Budget")
-st.session_state.income = st.sidebar.number_input("Enter your gross monthly income ($):", min_value=0)
+st.sidebar.header("Annual Income & Budget")
+st.session_state.annual_income = st.sidebar.number_input("Enter your gross annual income ($):", min_value=0)
 
 state = st.sidebar.selectbox("Select your state (for tax estimate):", ["NY", "CA", "TX", "FL", "MA", "Other"])
-net_income = calculate_taxes(st.session_state.income, state)
-st.sidebar.markdown(f"**Estimated Net Income:** ${net_income:,.2f}")
+
+# Calculate monthly tax-adjusted income
+tax_details = calculate_taxes(st.session_state.annual_income, state)
+monthly_net_income = tax_details["net_income"] / 12
+
+st.session_state["tax_summary"] = tax_details
+
+st.sidebar.subheader("Tax Breakdown")
+st.sidebar.write(f"Federal Tax: ${tax_details['federal_tax']:,.2f}")
+st.sidebar.write(f"State Tax: ${tax_details['state_tax']:,.2f}")
+st.sidebar.write(f"Total Tax: ${tax_details['total_tax']:,.2f}")
+st.sidebar.write(f"Net Monthly Income: ${monthly_net_income:,.2f}")
 
 st.sidebar.subheader("Set Monthly Budget Goals")
 categories = ["Rent", "Groceries", "Dining Out", "Transportation", "Entertainment", "Utilities", "Insurance", "Subscriptions", "Other"]
@@ -51,7 +61,7 @@ if uploaded_file is not None:
 
 st.header("Expense Summary")
 total_expenses = st.session_state.expenses["Amount"].sum()
-savings = net_income - total_expenses
+savings = monthly_net_income - total_expenses
 
 st.metric("Total Monthly Expenses", f"${total_expenses:,.2f}")
 st.metric("Estimated Monthly Savings", f"${savings:,.2f}")
@@ -79,6 +89,5 @@ st.sidebar.metric("Points", points)
 for a in achievements:
     st.sidebar.write(f"🏆 {a}")
 
-# Add user feedback encouragement
 st.markdown("---")
 st.markdown("💡 **Tip:** The more detailed your descriptions and the closer you stay to your budget, the more points you'll earn!")
