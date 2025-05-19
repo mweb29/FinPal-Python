@@ -2,8 +2,8 @@ import streamlit as st
 import pandas as pd
 import os
 import plotly.express as px
-from data_processing import calculate_taxes, categorize_expense, parse_bank_statement
-from gamification import calculate_points, get_achievements
+from utils.data_processing import calculate_taxes, categorize_expense, parse_bank_statement
+from utils.gamification import calculate_points, get_achievements
 
 st.set_page_config(page_title="FinPal Budget App", layout="wide")
 
