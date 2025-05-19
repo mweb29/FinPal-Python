@@ -30,29 +30,29 @@ if "budget" not in st.session_state:
 if page == "Budget Setup":
     st.title("Budget Setup")
 
-    st.session_state.annual_income = st.sidebar.number_input("Enter your gross annual income ($):", min_value=0)
+    st.session_state.annual_income = st.number_input("Enter your gross annual income ($):", min_value=0)
 
-    state = st.sidebar.selectbox("Select your state (for tax estimate):", US_STATE_CODES)
+    state = st.selectbox("Select your state (for tax estimate):", US_STATE_CODES)
     nyc_resident = False
     if state == "NY":
-        nyc_resident = st.sidebar.checkbox("Check this if you live in NYC (3.876% city tax applies)")
+        nyc_resident = st.checkbox("Check this if you live in NYC (3.876% city tax applies)")
 
     tax_details = calculate_taxes(st.session_state.annual_income, state, nyc=nyc_resident)
     monthly_net_income = tax_details["net_income"] / 12
     st.session_state["tax_summary"] = tax_details
 
-    st.sidebar.subheader("Tax Breakdown")
-    st.sidebar.write(f"Federal Tax: ${tax_details['federal_tax']:,.2f}")
-    st.sidebar.write(f"State Tax: ${tax_details['state_tax']:,.2f}")
+    st.subheader("Tax Breakdown")
+    st.write(f"Federal Tax: ${tax_details['federal_tax']:,.2f}")
+    st.write(f"State Tax: ${tax_details['state_tax']:,.2f}")
     if nyc_resident:
-        st.sidebar.write(f"NYC Tax: ${tax_details['nyc_tax']:,.2f}")
-    st.sidebar.write(f"Total Tax: ${tax_details['total_tax']:,.2f}")
-    st.sidebar.write(f"Net Monthly Income: ${monthly_net_income:,.2f}")
+        st.write(f"NYC Tax: ${tax_details['nyc_tax']:,.2f}")
+    st.write(f"Total Tax: ${tax_details['total_tax']:,.2f}")
+    st.write(f"Net Monthly Income: ${monthly_net_income:,.2f}")
 
-    st.sidebar.subheader("Set Monthly Budget Goals")
+    st.subheader("Set Monthly Budget Goals")
     categories = ["Rent", "Groceries", "Dining Out", "Transportation", "Entertainment", "Utilities", "Insurance", "Subscriptions", "Other"]
     for cat in categories:
-        st.session_state.budget[cat] = st.sidebar.number_input(f"{cat} Budget ($)", min_value=0, value=0, step=50)
+        st.session_state.budget[cat] = st.number_input(f"{cat} Budget ($)", min_value=0, value=0, step=50)
 
 elif page == "Track Expenses":
     st.title("Track Expenses & Upload Statements")
