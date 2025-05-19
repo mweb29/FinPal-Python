@@ -1,0 +1,6 @@
+streamlit>=1.35.0
+pandas>=2.2.0
+plotly>=5.20.0
+pdfminer.six>=20221105  # for future PDF parsing support
+pytesseract>=0.3.10      # for future image-based OCR
+Pillow>=10.0.0  
