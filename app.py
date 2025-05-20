@@ -10,23 +10,17 @@ st.set_page_config(page_title="FinPal Budget App", layout="wide")
 # Initialize the database
 init_db()
 
-# Optional reset function
-def reset_user_session():
-    for key in list(st.session_state.keys()):
-        del st.session_state[key]
-
-# Always display logout (early in script)
-authenticator.logout("Logout", "sidebar")
-
-# If logout happened, reset state and rerun
-if "authentication_status" in st.session_state and st.session_state["authentication_status"] != True:
-    reset_user_session()
-    st.experimental_rerun()
-
-# If not logged in, force login
+# Force login if not already authenticated
 if "authentication_status" not in st.session_state or st.session_state["authentication_status"] != True:
     username = login_user()
     st.stop()
+
+# Place logout button AFTER login has succeeded
+authenticator.logout("Logout", "sidebar")
+
+# After logout, session keys are cleared → re-trigger login
+if "username" not in st.session_state or not st.session_state["username"]:
+    st.experimental_rerun()
 
 # At this point, we know the user is authenticated
 username = st.session_state["username"]
