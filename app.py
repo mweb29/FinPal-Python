@@ -3,7 +3,7 @@ import pandas as pd
 import altair as alt
 from utils.data_processing import calculate_taxes, categorize_expense, parse_bank_statement
 from db_manager import init_db, load_user_data, save_user_data, initialize_session_from_user_data, persist_session
-from user_auth_storage import login_user
+from user_auth_storage import login_user, authenticator
 
 st.set_page_config(page_title="FinPal Budget App", layout="wide")
 
@@ -18,6 +18,9 @@ if "authentication_status" not in st.session_state:
 if st.session_state["authentication_status"] != True:
     username = login_user()
     st.stop()
+
+# Add this line to allow logout
+authenticator.logout("Logout", "sidebar")
 
 # If the user is authenticated, proceed with loading user data
 username = st.session_state["username"]
