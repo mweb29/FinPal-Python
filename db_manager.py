@@ -110,10 +110,16 @@ def load_user_data(username: str) -> Dict[str, Any]:
 
 # --- INITIALIZE SESSION STATE ---
 def initialize_session_from_user_data(user_data: Dict[str, Any]):
+    import streamlit as st
+    import pandas as pd
+
     st.session_state.budget = user_data.get("budget", {})
     st.session_state.annual_income = user_data.get("income", 0)
     st.session_state.selected_state = user_data.get("state", "NY")
     expenses_dict = user_data.get("expenses", {})
-    st.session_state.expenses = pd.DataFrame(expenses_dict) if expenses_dict else pd.DataFrame(columns=["Date", "Amount", "Category", "Description"])
+    st.session_state.expenses = (
+        pd.DataFrame(expenses_dict)
+        if expenses_dict else pd.DataFrame(columns=["Date", "Amount", "Category", "Description"])
+    )
     st.session_state.nyc_resident = user_data.get("nyc_resident", False)
     st.session_state.tax_summary = user_data.get("tax_summary", {})
