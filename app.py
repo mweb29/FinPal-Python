@@ -76,9 +76,9 @@ if page == "Budget Setup":
 
         # Calculate and save taxes
         st.session_state.tax_details = calculate_taxes(
-            income=income,
+            gross_income=income,
             state=state,
-            nyc_resident=nyc
+            nyc=nyc
         )
         st.success("Tax estimate calculated and saved.")
         
