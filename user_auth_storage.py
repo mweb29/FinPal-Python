@@ -46,14 +46,3 @@ def login_user():
     else:
         st.warning("Please enter your credentials.")
         st.stop()
-
-# --- SAVE STATE ---
-def persist_session(username: str):
-    save_user_data(username, {
-        "budget": st.session_state.budget,
-        "income": st.session_state.annual_income,
-        "state": st.session_state.selected_state,
-        "expenses": st.session_state.expenses.to_dict(),
-        "nyc_resident": st.session_state.nyc_resident,
-        "tax_summary": st.session_state.get("tax_summary", {})
-    })
