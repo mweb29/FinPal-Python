@@ -200,8 +200,7 @@ elif page == "Track Expenses":
         color=alt.Color(
             'Category:N',
             title='Category',
-            sort=category_order,  # <- this is safe now
-            scale=alt.Scale(scheme='category20')
+            sort=category_order  # <- this is safe now
         ),
         tooltip=['Category:N', 'Amount:Q']
     ).properties(width=600, height=400)
