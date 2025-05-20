@@ -1,6 +1,7 @@
 import pandas as pd
 
 STATE_BRACKETS_DF = pd.read_csv("normalized_state_brackets_2024.csv")
+STATE_BRACKETS_DF["State"] = STATE_BRACKETS_DF["State"].str.replace(".", "", regex=False).str.strip().str.upper()
 
 STATE_CODE_MAP = {
     "Ala": "AL", "Alaska": "AK", "Ariz": "AZ", "Ark": "AR", "Calif": "CA", "Colo": "CO",
