@@ -19,6 +19,10 @@ STATE_NAME_TO_CODE = {
 
 def calculate_taxes(gross_income, state, nyc=False):
     """Calculates federal, state, and NYC taxes and returns detailed breakdown."""
+    # Get the taxable income for the year
+    STANDARD_DEDUCTION = 14600
+    taxable_income = max(0, gross_income - STANDARD_DEDUCTION)
+    
     # These are the 2024 U.S. federal tax brackets for single filers
     federal_brackets = [
         (0, 11000, 0.10), (11000, 44725, 0.12), (44725, 95375, 0.22),
@@ -64,10 +68,10 @@ def calculate_taxes(gross_income, state, nyc=False):
             for i in range(len(rates))
         ]
 
-    federal_tax, federal_breakdown = apply_brackets(gross_income, federal_brackets)
-    state_tax, _ = apply_brackets(gross_income, state_brackets)
+    federal_tax, federal_breakdown = apply_brackets(taxable_income, federal_brackets)
+    state_tax, _ = apply_brackets(taxable_income, state_brackets)
     # Add NYC tax if applicable
-    nyc_tax = gross_income * 0.03876 if nyc and state_clean == "NY" else 0.0
+    nyc_tax = taxable_income * 0.03876 if nyc and state_clean == "NY" else 0.0
 
     total_tax = federal_tax + state_tax + nyc_tax
     net_income = gross_income - total_tax
