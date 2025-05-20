@@ -63,11 +63,18 @@ if page == "Budget Setup":
     else:
         st.session_state.nyc_resident = False
 
-    tax_details = calculate_taxes(
-        gross_income=st.session_state.annual_income,
-        state=st.session_state.selected_state,
-        nyc=st.session_state.nyc_resident
-    )
+    if st.session_state.annual_income and st.session_state.selected_state:
+        tax_details = calculate_taxes(
+            income=st.session_state.annual_income,
+            state=st.session_state.selected_state,
+            nyc_resident=st.session_state.nyc_resident
+        )
+
+        # Optional display logic
+        federal_df = pd.DataFrame(tax_details["federal_breakdown"])
+        st.subheader("Tax Breakdown")
+        st.write(federal_df)
+        
     monthly_net_income = tax_details["net_income"] / 12
     st.session_state["tax_summary"] = tax_details
 
