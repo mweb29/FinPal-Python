@@ -16,13 +16,18 @@ passwords = ["123"]  # TODO: Replace with hashed passwords later
 
 # --- HASH PASSWORDS ---
 hashed_pw = stauth.Hasher(passwords).generate()
+credentials = {
+    "usernames": {
+        u: {"name": n, "password": p}
+        for u, n, p in zip(usernames, names, hashed_pw)
+    }
+}
+
 authenticator = stauth.Authenticate(
-    credentials=dict(zip(usernames, names)),
-    usernames=usernames,
-    passwords=hashed_pw,
-    cookie_name='finpal_cookie',
-    key='auth',
-    cookie_expiry_days=30
+    credentials,
+    usernames,
+    hashed_pw,
+    "finpal_cookie", "random_signature", cookie_expiry_days=30
 )
 
 def login_user():
