@@ -4,7 +4,7 @@ import streamlit_authenticator as stauth
 import json
 import os
 import pandas as pd
-from streamlit_authenticator.utilities.hasher import Hasher
+from streamlit_authenticator import Hasher
 from typing import Dict, Any
 from db_manager import save_user_data, load_user_data
 
