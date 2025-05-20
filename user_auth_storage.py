@@ -48,12 +48,17 @@ def login_user():
 def save_user_data(username: str, data: Dict[str, Any]):
     os.makedirs(USER_DATA_DIR, exist_ok=True)
     filepath = os.path.join(USER_DATA_DIR, f"{username}.json")
-    try:
-        with open(filepath, "w") as f:
-            json.dump(data, f)
-        st.sidebar.info(f"Data saved to {filepath}")
-    except Exception as e:
-        st.sidebar.error(f"Failed to save data: {e}")
+    with open(filepath, "w") as f:
+        def convert(o):
+            if isinstance(o, pd.Timestamp):
+                return o.isoformat()
+            if isinstance(o, pd.DataFrame):
+                return o.to_dict()
+            if hasattr(o, "isoformat"):
+                return o.isoformat()
+            return str(o)
+
+        json.dump(data, f, default=convert)
 
 # --- LOAD DATA ---
 def load_user_data(username: str) -> Dict[str, Any]:
