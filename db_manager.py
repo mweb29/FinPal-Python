@@ -110,11 +110,15 @@ def load_user_data(username: str) -> Dict[str, Any]:
 
 # --- SAVE STATE ---
 def persist_session(username: str):
+    expenses_df = st.session_state.get("expenses")
+    if not isinstance(expenses_df, pd.DataFrame):
+        expenses_df = pd.DataFrame(columns=["Date", "Amount", "Category", "Description"])
+
     save_user_data(username, {
         "budget": st.session_state.get("budget", {}),
         "income": st.session_state.get("annual_income", 0),
         "state": st.session_state.get("selected_state", "NY"),
-        "expenses": st.session_state.get("expenses", pd.DataFrame(columns=["Date", "Amount", "Category", "Description"])).to_dict(),
+        "expenses": expenses_df.to_dict(),
         "nyc_resident": st.session_state.get("nyc_resident", False),
         "tax_summary": st.session_state.get("tax_summary", {})
     })
