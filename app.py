@@ -5,7 +5,7 @@ import os
 import altair as alt
 import plotly.express as px
 from utils.data_processing import calculate_taxes, categorize_expense, parse_bank_statement
-from db_manager import init_db, load_user_data, save_user_data
+from db_manager import init_db, load_user_data, save_user_data, initialize_session_from_user_data
 from user_auth_storage import login_user
 
 # Ensure DB is initialized
