@@ -170,8 +170,8 @@ elif page == "Track Expenses":
         st.markdown("### Budget vs Actual Spending")
         chart = alt.Chart(stacked_df).mark_bar().encode(
             x=alt.X('Category:N', title="Category"),
-            y=alt.Y('Amount:Q', stack="zero", title="Amount ($)"),
-            color=alt.Color('Type:N', scale=alt.Scale(scheme='set2'))
+            y=alt.Y('Amount:Q', title="Amount ($)", stack='normalize'),  # Use 'zero' if you want raw stacking
+            color=alt.Color('Type:N', title="Type", scale=alt.Scale(scheme='tableau10'))
         ).properties(width=700, height=400)
     
         st.altair_chart(chart, use_container_width=True)
