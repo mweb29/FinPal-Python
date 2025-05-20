@@ -48,7 +48,7 @@ if "nyc_resident" not in st.session_state:
 
 if page == "Budget Setup":
     st.title("Budget Setup")
-    
+
     with st.form("budget_form"):
         income = st.number_input(
             "Enter your gross annual income ($):",
@@ -69,53 +69,53 @@ if page == "Budget Setup":
         submitted = st.form_submit_button("Save and Estimate Taxes")
 
     if submitted:
-        # Save inputs
         st.session_state.annual_income = income
         st.session_state.selected_state = state
         st.session_state.nyc_resident = nyc
 
-        # Calculate and save taxes
         st.session_state.tax_details = calculate_taxes(
             gross_income=income,
             state=state,
             nyc=nyc
         )
         st.success("Tax estimate calculated and saved.")
-        
-    monthly_net_income = st.session_state["tax_details"]["net_income"] / 12
-    st.session_state["tax_summary"] = st.session_state.tax_details
 
-    st.subheader("Tax Breakdown")
-    st.write(f"Standard Deduction: ${st.session_state["tax_details"]['standard_deduction']:,.2f}")
-    st.write(f"Taxable Income: ${st.session_state["tax_details"]['taxable_income']:,.2f}")
-    st.write(f"Federal Tax: ${st.session_state["tax_details"]['federal_tax']:,.2f}")
-    st.write(f"State Tax: ${st.session_state["tax_details"]['state_tax']:,.2f}")
-    if st.session_state.nyc_resident:
-        st.write(f"NYC Tax: ${st.session_state["tax_details"]['nyc_tax']:,.2f}")
-    st.write(f"Total Tax: ${st.session_state["tax_details"]['total_tax']:,.2f}")
-    st.write(f"Net Monthly Income: ${monthly_net_income:,.2f}")
-    
-    # 🆕 Add this right below the tax numbers:
-    if st.session_state["tax_details"]["federal_breakdown"]:
-        federal_df = pd.DataFrame(st.session_state["tax_details"]["federal_breakdown"])
-        federal_df = federal_df[["lower_bound", "upper_bound", "rate", "amount_taxed", "tax"]]
-        federal_df.columns = ["From", "To", "Rate", "Amount Taxed", "Tax"]
+    # 🔒 Only show breakdown if tax_details exists
+    if "tax_details" in st.session_state and st.session_state["tax_details"]:
+        monthly_net_income = st.session_state["tax_details"]["net_income"] / 12
+        st.session_state["tax_summary"] = st.session_state["tax_details"]
+
+        st.subheader("Tax Breakdown")
+        st.write(f"Standard Deduction: ${st.session_state['tax_details']['standard_deduction']:,.2f}")
+        st.write(f"Taxable Income: ${st.session_state['tax_details']['taxable_income']:,.2f}")
+        st.write(f"Federal Tax: ${st.session_state['tax_details']['federal_tax']:,.2f}")
+        st.write(f"State Tax: ${st.session_state['tax_details']['state_tax']:,.2f}")
+        if st.session_state.nyc_resident:
+            st.write(f"NYC Tax: ${st.session_state['tax_details']['nyc_tax']:,.2f}")
+        st.write(f"Total Tax: ${st.session_state['tax_details']['total_tax']:,.2f}")
+        st.write(f"Net Monthly Income: ${monthly_net_income:,.2f}")
+
+        # Federal Breakdown
         st.markdown("###### Federal Tax Breakdown")
-        st.table(federal_df)
-    else:
-        st.markdown("###### Federal Tax Breakdown")
-        st.info("Enter an income above $0 to view federal tax bracket breakdown.")
+        federal_data = st.session_state["tax_details"].get("federal_breakdown", [])
+        if federal_data:
+            federal_df = pd.DataFrame(federal_data)[["lower_bound", "upper_bound", "rate", "amount_taxed", "tax"]]
+            federal_df.columns = ["From", "To", "Rate", "Amount Taxed", "Tax"]
+            st.table(federal_df)
+        else:
+            st.info("Enter an income above $0 to view federal tax bracket breakdown.")
 
-    if st.session_state["tax_details"]["state_breakdown"]:
-        state_df = pd.DataFrame(st.session_state["tax_details"]["state_breakdown"])
-        state_df = state_df[["lower_bound", "upper_bound", "rate", "amount_taxed", "tax"]]
-        state_df.columns = ["From", "To", "Rate", "Amount Taxed", "Tax"]
+        # State Breakdown
         st.markdown("###### State Tax Breakdown")
-        st.table(state_df)
+        state_data = st.session_state["tax_details"].get("state_breakdown", [])
+        if state_data:
+            state_df = pd.DataFrame(state_data)[["lower_bound", "upper_bound", "rate", "amount_taxed", "tax"]]
+            state_df.columns = ["From", "To", "Rate", "Amount Taxed", "Tax"]
+            st.table(state_df)
+        else:
+            st.info("Enter an income above $0 to view state tax bracket breakdown.")
     else:
-        st.markdown("###### State Tax Breakdown")
-        st.info("Enter an income above $0 to view state tax bracket breakdown.")
-
+        st.info("Please submit the form above to see tax calculations.")
 
     st.subheader("Set Monthly Budget Goals")
     # Only define categories once
