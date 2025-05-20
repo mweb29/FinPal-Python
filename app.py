@@ -183,6 +183,15 @@ elif page == "Track Expenses":
     
     # Combine into one long dataframe
     stacked_df = pd.concat([stacked_budget, stacked_actual])
+
+    # Defining the stacking of the graph
+    category_order = (
+        stacked_df.groupby("Category")["Amount"]
+        .sum()
+        .sort_values(ascending=False)
+        .index
+        .tolist()
+    )
     
     # Plot as a grouped, stacked bar chart by Type
     chart = alt.Chart(stacked_df).mark_bar().encode(
@@ -191,7 +200,7 @@ elif page == "Track Expenses":
         color=alt.Color(
             'Category:N',
             title='Category',
-            sort=category_order,  # <-- this is the key change
+            sort=category_order,  # <- this is safe now
             scale=alt.Scale(scheme='category20')
         ),
         tooltip=['Category:N', 'Amount:Q']
