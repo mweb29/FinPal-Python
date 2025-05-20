@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import os
+import altair as alt
 import plotly.express as px
 from utils.data_processing import calculate_taxes, categorize_expense, parse_bank_statement
 from utils.gamification import calculate_points, get_achievements
@@ -137,20 +138,46 @@ elif page == "Track Expenses":
     st.metric("Total Monthly Expenses", f"${total_expenses:,.2f}")
     st.metric("Estimated Monthly Savings", f"${savings:,.2f}")
 
-    category_summary = st.session_state.expenses.groupby("Category")["Amount"].sum().reset_index()
+    ### Working on
+    
     st.subheader("Spending by Category vs Budget")
-    category_summary["Budget"] = category_summary["Category"].apply(lambda x: st.session_state.budget.get(x, 0))
-    category_summary["Over Budget"] = category_summary["Amount"] > category_summary["Budget"]
+    # Build Budget DataFrame
+    budget_df = pd.DataFrame({
+        "Category": list(st.session_state.budget.keys()),
+        "Budgeted": list(st.session_state.budget.values())
+    })
+    # Build Actuals from expenses
+    if not st.session_state.expenses.empty:
+        actuals_df = (
+            st.session_state.expenses
+            .groupby("Category")["Amount"]
+            .sum()
+            .reset_index()
+            .rename(columns={"Amount": "Actual"})
+        )
+    else:
+        actuals_df = pd.DataFrame(columns=["Category", "Actual"])
+    # Merge both
+    combined_df = pd.merge(budget_df, actuals_df, on="Category", how="outer").fillna(0)
+    # Melt for stacked bar chart
+    stacked_df = combined_df.melt(id_vars="Category", value_vars=["Budgeted", "Actual"],
+                                  var_name="Type", value_name="Amount")
 
-    fig_bar = px.bar(category_summary, x="Category", y=["Amount", "Budget"], barmode="group", title="Actual vs Budgeted Spending")
-    st.plotly_chart(fig_bar, use_container_width=True)
-
-    fig_pie = px.pie(category_summary, names="Category", values="Amount", title="Current Month's Expense Distribution")
-    st.plotly_chart(fig_pie, use_container_width=True)
+    st.markdown("### Budget vs Actual Spending")
+    chart = alt.Chart(stacked_df).mark_bar().encode(
+        x=alt.X('Category:N', title="Category"),
+        y=alt.Y('Amount:Q', stack="zero", title="Amount ($)"),
+        color=alt.Color('Type:N', scale=alt.Scale(scheme='tableau10'))
+    ).properties(width=700)
+    
+    st.altair_chart(chart, use_container_width=True)
 
     st.subheader("Detailed Expenses")
     st.dataframe(st.session_state.expenses)
 
+
+    ###
+    
     # Gamification
     points = calculate_points(st.session_state.expenses, st.session_state.budget)
     achievements = get_achievements(points)
