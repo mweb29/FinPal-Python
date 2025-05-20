@@ -130,7 +130,6 @@ elif page == "Track Expenses":
         st.success("Bank statement parsed and expenses added!")
 
     st.header("Expense Summary")
-    st.header("Expense Summary")
 
     # Protect against missing keys
     budget = st.session_state.get("budget", {})
