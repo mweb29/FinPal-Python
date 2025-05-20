@@ -1,4 +1,4 @@
-
+import streamlit as st
 import sqlite3
 import os
 import json
@@ -110,6 +110,9 @@ def load_user_data(username: str) -> Dict[str, Any]:
 
 # --- SAVE STATE ---
 def persist_session(username: str):
+    if "budget" not in st.session_state:
+        return  # Avoid persisting if state hasn't loaded
+
     expenses_df = st.session_state.get("expenses")
     if not isinstance(expenses_df, pd.DataFrame):
         expenses_df = pd.DataFrame(columns=["Date", "Amount", "Category", "Description"])
