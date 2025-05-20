@@ -61,7 +61,7 @@ if page == "Budget Setup":
         income = st.number_input(
             "Enter your gross annual income ($):",
             min_value=0.0,
-            value=st.session_state.annual_income
+            value=float(st.session_state.get("annual_income", 0.0))
         )
         state = st.selectbox(
             "Select your state (for tax estimate):",
