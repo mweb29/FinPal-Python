@@ -8,6 +8,12 @@ from utils.data_processing import calculate_taxes, categorize_expense, parse_ban
 from db_manager import init_db, load_user_data, save_user_data, initialize_session_from_user_data
 from user_auth_storage import login_user
 
+# Ensure necessary session keys are initialized
+if "authentication_status" not in st.session_state:
+    st.session_state["authentication_status"] = None
+if "logout" not in st.session_state:
+    st.session_state["logout"] = False
+
 # Ensure DB is initialized
 init_db()
 
