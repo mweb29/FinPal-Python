@@ -61,7 +61,7 @@ if page == "Budget Setup":
     st.write(f"Taxable Income: ${tax_details['taxable_income']:,.2f}")
     st.write(f"Federal Tax: ${tax_details['federal_tax']:,.2f}")
     st.write(f"State Tax: ${tax_details['state_tax']:,.2f}")
-    if nyc_resident:
+    if st.session_state.nyc_resident:
         st.write(f"NYC Tax: ${tax_details['nyc_tax']:,.2f}")
     st.write(f"Total Tax: ${tax_details['total_tax']:,.2f}")
     st.write(f"Net Monthly Income: ${monthly_net_income:,.2f}")
