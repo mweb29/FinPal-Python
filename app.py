@@ -22,9 +22,6 @@ authenticator.logout("Logout", "sidebar")
 if "username" not in st.session_state or not st.session_state["username"]:
     st.experimental_rerun()
 
-# At this point, we know the user is authenticated
-username = st.session_state["username"]
-
 # If the user is authenticated, proceed with loading user data
 username = st.session_state["username"]
 user_data = load_user_data(username)
