@@ -20,6 +20,10 @@ init_db()
 # Authenticate user
 username = login_user()
 
+if st.session_state.get("logout"):
+    st.session_state.clear()
+    st.experimental_rerun()
+
 # Load their saved data
 user_data = load_user_data(username) 
 initialize_session_from_user_data(user_data)
