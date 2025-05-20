@@ -17,12 +17,12 @@ if "logout" not in st.session_state:
 # Ensure DB is initialized
 init_db()
 
-# Authenticate user
-username = login_user()
-
 if st.session_state.get("logout"):
     st.session_state.clear()
     st.experimental_rerun()
+
+# Authenticate user
+username = login_user()
 
 # Load their saved data
 user_data = load_user_data(username) 
