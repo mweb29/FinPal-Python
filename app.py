@@ -11,9 +11,11 @@ from user_auth_storage import login_user, authenticator
 # Initialize the database
 init_db()
 
-# Force login if not already authenticated
-if "authentication_status" not in st.session_state or st.session_state["authentication_status"] != True:
-    username = login_user()
+# Show login form every time — only authenticate once
+username = login_user()
+
+# Check status and stop if not logged in
+if st.session_state.get("authentication_status") != True:
     st.stop()
 
 # Place logout button AFTER login has succeeded
