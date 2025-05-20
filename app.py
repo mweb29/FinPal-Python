@@ -19,7 +19,7 @@ init_db()
 
 if st.session_state.get("logout"):
     st.session_state.clear()
-    st.experimental_rerun()
+    st.rerun()
 
 # Authenticate user
 username = login_user()
