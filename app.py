@@ -4,6 +4,14 @@ import os
 import altair as alt
 import plotly.express as px
 from utils.data_processing import calculate_taxes, categorize_expense, parse_bank_statement
+from user_auth_storage import login_user, load_user_data, save_user_data, initialize_session_from_user_data, persist_session
+
+# Authenticate user
+username = login_user()
+
+# Load their saved data
+user_data = load_user_data(username) 
+initialize_session_from_user_data(user_data)
 
 st.set_page_config(page_title="FinPal Budget App", layout="wide")
 
@@ -105,6 +113,9 @@ if page == "Budget Setup":
         st.session_state.budget[cat] = st.number_input(
             f"{cat} Budget ($)", min_value=0, value=st.session_state.budget[cat], step=50
         )
+
+    # Save
+    persist_session(username)
 
 elif page == "Track Expenses":
     st.title("Track Expenses & Upload Statements")
@@ -209,3 +220,6 @@ elif page == "Track Expenses":
 
     st.subheader("Detailed Expenses")
     st.dataframe(st.session_state.expenses)
+
+    # Save
+    persist_session(username)
