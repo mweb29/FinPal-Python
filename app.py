@@ -76,7 +76,7 @@ if page == "Budget Setup":
     
     # Then create input boxes without overwriting stored values
     for cat in categories:
-        st.session_state.budget[cat] = st.sidebar.number_input(
+        st.session_state.budget[cat] = st.number_input(
             f"{cat} Budget ($)", min_value=0, value=st.session_state.budget[cat], step=50
         )
 
