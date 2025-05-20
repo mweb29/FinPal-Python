@@ -51,7 +51,8 @@ if page == "Budget Setup":
     
     # 🆕 Add this right below the tax numbers:
     federal_df = pd.DataFrame(tax_details["federal_breakdown"])
-    federal_df.columns = ["Income Range", "Rate", "Amount Taxed", "Tax"]
+    federal_df = federal_df[["lower_bound", "upper_bound", "rate", "amount_taxed", "tax"]]
+    federal_df.columns = ["From", "To", "Rate", "Amount Taxed", "Tax"]
     st.markdown("#### Federal Tax Breakdown")
     st.table(federal_df)
 
