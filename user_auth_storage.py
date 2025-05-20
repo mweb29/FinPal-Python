@@ -10,9 +10,9 @@ from typing import Dict, Any
 USER_DATA_DIR = "user_data"
 
 # Example user credentials (hash these in production!)
-names = ["Michael"]
-usernames = ["mweb"]
-passwords = ["123"]  # TODO: Replace with hashed passwords later
+names = ["Michael", "Test User"]
+usernames = ["mweb", "test"]
+passwords = ["123", "testpass"]
 
 # --- HASH PASSWORDS ---
 hashed_pw = stauth.Hasher(passwords).generate()
