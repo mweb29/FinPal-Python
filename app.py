@@ -93,7 +93,7 @@ if page == "Budget Setup":
     if "budget" not in st.session_state:
         st.session_state.budget = {}
     
-    categories = ["Rent", "Groceries", "Dining Out", "Transportation", "Entertainment", "Utilities", "Gym", "Internet"]
+    categories = ["Rent", "Groceries", "Transportation", "Entertainment", "Utilities", "Gym", "Internet"]
     
     # Set each category only if it's not already present
     for cat in categories:
