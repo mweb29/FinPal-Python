@@ -32,15 +32,22 @@ authenticator = stauth.Authenticate(
 def login_user():
     name, auth_status, username = authenticator.login("Login", "main")
 
-    # Only display sidebar and allow access if logged in
-    if auth_status:
-        authenticator.logout("Logout", "sidebar")
-        st.sidebar.success(f"Welcome {name}")
-        return username
-    elif auth_status is False:
-        st.error("Incorrect username or password.")
-        st.stop()
-    else:
+    if auth_status is None:
         st.warning("Please enter your credentials.")
         st.stop()
+    elif not auth_status:
+        st.error("Incorrect username or password.")
+        st.stop()
+
+    # Save login session keys
+    st.session_state["authentication_status"] = True
+    st.session_state["username"] = username
+    st.session_state["name"] = name
+    st.session_state["logout"] = False  # reset logout
+
+    # Show logout button
+    authenticator.logout("Logout", "sidebar")
+    st.sidebar.success(f"Welcome {name}")
+
+    return username
 
