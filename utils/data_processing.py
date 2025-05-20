@@ -27,22 +27,22 @@ def calculate_taxes(gross_income, state, nyc=False):
     ]
 
     def apply_brackets(income, brackets):
-    tax = 0.0
-    breakdown = []
-    for lower, upper, rate in brackets:
-        if income > lower:
-            taxed = min(income, upper) - lower
-            segment_tax = taxed * rate
-            breakdown.append({
-                "range": f"${lower:,.0f} to ${min(income, upper):,.0f}",
-                "rate": f"{rate*100:.1f}%",
-                "amount_taxed": f"${taxed:,.2f}",
-                "tax": f"${segment_tax:,.2f}"
-            })
-            tax += segment_tax
-        else:
-            break
-    return tax, breakdown
+        tax = 0.0
+        breakdown = []
+        for lower, upper, rate in brackets:
+            if income > lower:
+                taxed = min(income, upper) - lower
+                segment_tax = taxed * rate
+                breakdown.append({
+                    "range": f"${lower:,.0f} to ${min(income, upper):,.0f}",
+                    "rate": f"{rate*100:.1f}%",
+                    "amount_taxed": f"${taxed:,.2f}",
+                    "tax": f"${segment_tax:,.2f}"
+                })
+                tax += segment_tax
+            else:
+                break
+        return tax, breakdown
 
     state_clean = state.upper().strip()
     # Reverse the mapping so we can go from USPS code (e.g., 'NY') back to the normalized format used in the CSV (e.g., 'NEW YORK')
