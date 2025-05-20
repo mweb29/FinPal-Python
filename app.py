@@ -42,6 +42,8 @@ if page == "Budget Setup":
     st.session_state["tax_summary"] = tax_details
 
     st.subheader("Tax Breakdown")
+    st.write(f"Standard Deduction: ${tax_details['standard_deduction']:,.2f}")
+    st.write(f"Taxable Income: ${tax_details['taxable_income']:,.2f}")
     st.write(f"Federal Tax: ${tax_details['federal_tax']:,.2f}")
     st.write(f"State Tax: ${tax_details['state_tax']:,.2f}")
     if nyc_resident:
