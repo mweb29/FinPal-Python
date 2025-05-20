@@ -74,8 +74,19 @@ if page == "Budget Setup":
         st.markdown("###### Federal Tax Breakdown")
         st.table(federal_df)
     else:
-        st.markdown("#### Federal Tax Breakdown")
+        st.markdown("###### Federal Tax Breakdown")
         st.info("Enter an income above $0 to view federal tax bracket breakdown.")
+
+    if tax_details["state_breakdown"]:
+        state_df = pd.DataFrame(tax_details["state_breakdown"])
+        state_df = state_df[["lower_bound", "upper_bound", "rate", "amount_taxed", "tax"]]
+        state_df.columns = ["From", "To", "Rate", "Amount Taxed", "Tax"]
+        st.markdown("###### State Tax Breakdown")
+        st.table(state_df)
+    else:
+        st.markdown("###### State Tax Breakdown")
+        st.info("Enter an income above $0 to view state tax bracket breakdown.")
+
 
     st.subheader("Set Monthly Budget Goals")
     # Only define categories once
