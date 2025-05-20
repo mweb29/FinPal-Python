@@ -21,7 +21,7 @@ authenticator.logout("Logout", "sidebar")
 
 # After logout, session keys are cleared → re-trigger login
 if "username" not in st.session_state or not st.session_state["username"]:
-    st.experimental_rerun()
+    st.rerun()
 
 # If the user is authenticated, proceed with loading user data
 username = st.session_state["username"]
