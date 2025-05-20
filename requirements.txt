@@ -5,3 +5,4 @@ pdfminer.six>=20221105  # for future PDF parsing support
 pytesseract>=0.3.10      # for future image-based OCR
 Pillow>=10.0.0  
 altair
+streamlit_authenticator
