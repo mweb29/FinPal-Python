@@ -69,11 +69,6 @@ if page == "Budget Setup":
             state=st.session_state.selected_state,
             nyc_resident=st.session_state.nyc_resident
         )
-
-        # Optional display logic
-        federal_df = pd.DataFrame(tax_details["federal_breakdown"])
-        st.subheader("Tax Breakdown")
-        st.write(federal_df)
         
     monthly_net_income = tax_details["net_income"] / 12
     st.session_state["tax_summary"] = tax_details
