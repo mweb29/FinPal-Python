@@ -6,3 +6,4 @@ pytesseract>=0.3.10      # for future image-based OCR
 Pillow>=10.0.0  
 altair
 streamlit-authenticator==0.2.2
+sqlite3
