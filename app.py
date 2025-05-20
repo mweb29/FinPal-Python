@@ -141,36 +141,43 @@ elif page == "Track Expenses":
     ### Working on
     
     st.subheader("Spending by Category vs Budget")
-    # Build Budget DataFrame
-    budget_df = pd.DataFrame({
-        "Category": list(st.session_state.budget.keys()),
-        "Budgeted": list(st.session_state.budget.values())
-    })
-    # Build Actuals from expenses
-    if not st.session_state.expenses.empty:
-        actuals_df = (
-            st.session_state.expenses
-            .groupby("Category")["Amount"]
-            .sum()
-            .reset_index()
-            .rename(columns={"Amount": "Actual"})
-        )
-    else:
-        actuals_df = pd.DataFrame(columns=["Category", "Actual"])
-    # Merge both
-    combined_df = pd.merge(budget_df, actuals_df, on="Category", how="outer").fillna(0)
-    # Melt for stacked bar chart
-    stacked_df = combined_df.melt(id_vars="Category", value_vars=["Budgeted", "Actual"],
-                                  var_name="Type", value_name="Amount")
-
-    st.markdown("### Budget vs Actual Spending")
-    chart = alt.Chart(stacked_df).mark_bar().encode(
-        x=alt.X('Category:N', title="Category"),
-        y=alt.Y('Amount:Q', stack="zero", title="Amount ($)"),
-        color=alt.Color('Type:N', scale=alt.Scale(scheme='tableau10'))
-    ).properties(width=700)
+    # Check that a budget exists
+    if st.session_state.budget:
+        budget_df = pd.DataFrame({
+            "Category": list(st.session_state.budget.keys()),
+            "Budgeted": list(st.session_state.budget.values())
+        })
     
-    st.altair_chart(chart, use_container_width=True)
+        # Build actual spending DataFrame from expenses
+        if not st.session_state.expenses.empty:
+            actuals_df = (
+                st.session_state.expenses
+                .groupby("Category")["Amount"]
+                .sum()
+                .reset_index()
+                .rename(columns={"Amount": "Actual"})
+            )
+        else:
+            actuals_df = pd.DataFrame(columns=["Category", "Actual"])
+    
+        # Merge budgeted and actual
+        combined_df = pd.merge(budget_df, actuals_df, on="Category", how="outer").fillna(0)
+    
+        # Melt to long format for stacking
+        stacked_df = combined_df.melt(id_vars="Category", value_vars=["Budgeted", "Actual"],
+                                      var_name="Type", value_name="Amount")
+    
+        st.markdown("### Budget vs Actual Spending")
+        chart = alt.Chart(stacked_df).mark_bar().encode(
+            x=alt.X('Category:N', title="Category"),
+            y=alt.Y('Amount:Q', stack="zero", title="Amount ($)"),
+            color=alt.Color('Type:N', scale=alt.Scale(scheme='set2'))
+        ).properties(width=700, height=400)
+    
+        st.altair_chart(chart, use_container_width=True)
+    else:
+        st.info("No budget found. Please enter your budget on the Budget Setup page.")
+
 
     st.subheader("Detailed Expenses")
     st.dataframe(st.session_state.expenses)
