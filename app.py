@@ -36,7 +36,7 @@ US_STATE_CODES = [
 
 # Session state initialization
 if "annual_income" not in st.session_state:
-    st.session_state.annual_income = 0
+    st.session_state.annual_income = 0.0
 if "expenses" not in st.session_state:
     st.session_state.expenses = pd.DataFrame(columns=["Date", "Amount", "Category", "Description"])
 if "budget" not in st.session_state:
