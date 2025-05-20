@@ -1,6 +1,5 @@
 import pandas as pd
 
-STANDARD_DEDUCTION = 14600
 STATE_BRACKETS_DF = pd.read_csv("normalized_state_brackets_2024.csv")
 # Standardize state names by removing periods, trimming spaces, and converting to uppercase for reliable matching
 STATE_BRACKETS_DF["State"] = STATE_BRACKETS_DF["State"].str.replace(".", "", regex=False).str.strip().str.upper()
@@ -20,10 +19,6 @@ STATE_NAME_TO_CODE = {
 
 def calculate_taxes(gross_income, state, nyc=False):
     """Calculates federal, state, and NYC taxes and returns detailed breakdown."""
-
-    # Reduce by the standard deduction
-    # gross_income = gross_income - STANDARD_DEDUCTION
-    
     # These are the 2024 U.S. federal tax brackets for single filers
     federal_brackets = [
         (0, 11000, 0.10), (11000, 44725, 0.12), (44725, 95375, 0.22),
@@ -32,14 +27,22 @@ def calculate_taxes(gross_income, state, nyc=False):
     ]
 
     def apply_brackets(income, brackets):
-        tax = 0.0
-        for lower, upper, rate in brackets:
-            if income > lower:
-                taxed = min(income, upper) - lower
-                tax += taxed * rate
-            else:
-                break
-        return tax
+    tax = 0.0
+    breakdown = []
+    for lower, upper, rate in brackets:
+        if income > lower:
+            taxed = min(income, upper) - lower
+            segment_tax = taxed * rate
+            breakdown.append({
+                "range": f"${lower:,.0f} to ${min(income, upper):,.0f}",
+                "rate": f"{rate*100:.1f}%",
+                "amount_taxed": f"${taxed:,.2f}",
+                "tax": f"${segment_tax:,.2f}"
+            })
+            tax += segment_tax
+        else:
+            break
+    return tax, breakdown
 
     state_clean = state.upper().strip()
     # Reverse the mapping so we can go from USPS code (e.g., 'NY') back to the normalized format used in the CSV (e.g., 'NEW YORK')
@@ -60,8 +63,8 @@ def calculate_taxes(gross_income, state, nyc=False):
             for i in range(len(rates))
         ]
 
-    federal_tax = apply_brackets(gross_income, federal_brackets)
-    state_tax = apply_brackets(gross_income, state_brackets)
+    federal_tax, federal_breakdown = apply_brackets(gross_income, federal_brackets)
+    state_tax, _ = apply_brackets(gross_income, state_brackets)
     # Add NYC tax if applicable
     nyc_tax = gross_income * 0.03876 if nyc and state_clean == "NY" else 0.0
 
@@ -69,6 +72,7 @@ def calculate_taxes(gross_income, state, nyc=False):
     net_income = gross_income - total_tax
 
     return {
+        "federal_breakdown": federal_breakdown,
         "net_income": net_income,
         "federal_tax": federal_tax,
         "state_tax": state_tax,
