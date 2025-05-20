@@ -30,7 +30,12 @@ def login_user():
         if key not in st.session_state:
             st.session_state[key] = None
 
+    print("DEBUG: Full loaded credentials dict:")
+    print(json.dumps(credentials, indent=2))  # show full structure
+    
     name, auth_status, username = authenticator.login("Login", "main")
+
+    print("DEBUG: Login result ->", f"auth_status: {auth_status}, username: {username}, name: {name}")
 
     if auth_status:
         st.session_state["authentication_status"] = True
