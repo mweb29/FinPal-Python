@@ -124,7 +124,8 @@ if page == "Budget Setup":
         )
 
     # Save
-    persist_session(username)
+    if "budget" in st.session_state:
+        persist_session(username)
 
 elif page == "Track Expenses":
     st.title("Track Expenses & Upload Statements")
@@ -231,4 +232,5 @@ elif page == "Track Expenses":
     st.dataframe(st.session_state.expenses)
 
     # Save
-    persist_session(username)
+    if "budget" in st.session_state:
+        persist_session(username)
