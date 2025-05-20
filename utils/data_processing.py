@@ -1,5 +1,6 @@
 import pandas as pd
 
+STANDARD_DEDUCTION = 14600
 STATE_BRACKETS_DF = pd.read_csv("normalized_state_brackets_2024.csv")
 # Standardize state names by removing periods, trimming spaces, and converting to uppercase for reliable matching
 STATE_BRACKETS_DF["State"] = STATE_BRACKETS_DF["State"].str.replace(".", "", regex=False).str.strip().str.upper()
@@ -19,6 +20,10 @@ STATE_NAME_TO_CODE = {
 
 def calculate_taxes(gross_income, state, nyc=False):
     """Calculates federal, state, and NYC taxes and returns detailed breakdown."""
+
+    # Reduce by the standard deduction
+    # gross_income = gross_income - STANDARD_DEDUCTION
+    
     # These are the 2024 U.S. federal tax brackets for single filers
     federal_brackets = [
         (0, 11000, 0.10), (11000, 44725, 0.12), (44725, 95375, 0.22),
