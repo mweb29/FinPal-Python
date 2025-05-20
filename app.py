@@ -52,7 +52,7 @@ if page == "Budget Setup":
     st.title("Budget Setup")
 
     st.session_state.annual_income = st.number_input(
-    "Enter your gross annual income ($):", min_value=0, value=st.session_state.annual_income
+    "Enter your gross annual income ($):", min_value=0.0, value=st.session_state.annual_income
     )
     st.session_state.selected_state = st.selectbox(
         "Select your state (for tax estimate):", US_STATE_CODES, index=US_STATE_CODES.index(st.session_state.selected_state)
