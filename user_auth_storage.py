@@ -62,3 +62,14 @@ def initialize_session_from_user_data(user_data: Dict[str, Any]):
     st.session_state.expenses = pd.DataFrame(expenses_dict) if expenses_dict else pd.DataFrame(columns=["Date", "Amount", "Category", "Description"])
     st.session_state.nyc_resident = user_data.get("nyc_resident", False)
     st.session_state.tax_summary = user_data.get("tax_summary", {})
+
+# --- SAVE STATE ---
+def persist_session(username: str):
+    save_user_data(username, {
+        "budget": st.session_state.budget,
+        "income": st.session_state.annual_income,
+        "state": st.session_state.selected_state,
+        "expenses": st.session_state.expenses.to_dict(),
+        "nyc_resident": st.session_state.nyc_resident,
+        "tax_summary": st.session_state.get("tax_summary", {})
+    })
