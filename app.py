@@ -1,6 +1,7 @@
 import streamlit as st
+from utils.data_processing import calculate_taxes, categorize_expense, parse_bank_statement
+from db_manager import init_db, load_user_data, save_user_data, initialize_session_from_user_data, persist_session
 from user_auth_storage import login_user
-from db_manager import init_db, load_user_data, initialize_session_from_user_data
 
 st.set_page_config(page_title="FinPal Budget App", layout="wide")
 
