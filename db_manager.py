@@ -108,6 +108,17 @@ def load_user_data(username: str) -> Dict[str, Any]:
         "expenses": expenses_df.to_dict(orient="list")
     }
 
+# --- SAVE SESSION STATE ---
+def persist_session(username: str):
+    save_user_data(username, {
+        "budget": st.session_state.budget,
+        "income": st.session_state.annual_income,
+        "state": st.session_state.selected_state,
+        "expenses": st.session_state.expenses.to_dict(),
+        "nyc_resident": st.session_state.nyc_resident,
+        "tax_summary": st.session_state.get("tax_summary", {})
+    })
+
 # --- INITIALIZE SESSION STATE ---
 def initialize_session_from_user_data(user_data: Dict[str, Any]):
     import streamlit as st
