@@ -42,17 +42,19 @@ if page == "Budget Setup":
     st.session_state["tax_summary"] = tax_details
 
     st.subheader("Tax Breakdown")
-    st.subheader("Federal Tax Breakdown")
-    for row in tax_details["federal_breakdown"]:
-        st.markdown(
-            f"- {row['range']} at {row['rate']} → Taxed {row['amount_taxed']} = **{row['tax']}**"
-    )
     st.write(f"Federal Tax: ${tax_details['federal_tax']:,.2f}")
     st.write(f"State Tax: ${tax_details['state_tax']:,.2f}")
     if nyc_resident:
         st.write(f"NYC Tax: ${tax_details['nyc_tax']:,.2f}")
     st.write(f"Total Tax: ${tax_details['total_tax']:,.2f}")
     st.write(f"Net Monthly Income: ${monthly_net_income:,.2f}")
+    
+    # 🆕 Add this right below the tax numbers:
+    st.markdown("#### Federal Tax Breakdown")
+    for row in tax_details["federal_breakdown"]:
+        st.markdown(
+            f"- {row['range']} at {row['rate']} → Taxed {row['amount_taxed']} = **{row['tax']}**"
+        )
 
     st.subheader("Set Monthly Budget Goals")
     categories = ["Rent", "Groceries", "Dining Out", "Transportation", "Entertainment", "Utilities", "Insurance", "Subscriptions", "Other"]
