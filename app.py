@@ -1,29 +1,22 @@
 import streamlit as st
+from user_auth_storage import login_user
+from db_manager import init_db, load_user_data, initialize_session_from_user_data
+
 st.set_page_config(page_title="FinPal Budget App", layout="wide")
 
-import pandas as pd
-import os
-import altair as alt
-import plotly.express as px
-
-from utils.data_processing import calculate_taxes, categorize_expense, parse_bank_statement
-from db_manager import init_db, load_user_data, save_user_data, initialize_session_from_user_data, persist_session
-from user_auth_storage import login_user
-
-# --- Ensure DB is initialized ---
+# Initialize the database
 init_db()
 
-# --- Clear session on logout ---
-if st.session_state.get("logout"):
-    st.session_state.clear()
-    st.rerun()
+# Check if the user is authenticated
+if "authentication_status" not in st.session_state:
+    st.session_state["authentication_status"] = None
 
-# --- Enforce login before doing anything else ---
-if st.session_state.get("authentication_status") != True:
+# If the user is not authenticated, prompt for login
+if st.session_state["authentication_status"] != True:
     username = login_user()
     st.stop()
 
-# --- Logged in: proceed ---
+# If the user is authenticated, proceed with loading user data
 username = st.session_state["username"]
 user_data = load_user_data(username)
 initialize_session_from_user_data(user_data)
