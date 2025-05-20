@@ -29,6 +29,9 @@ authenticator = stauth.Authenticate(
 )
 
 def login_user():
+    if "authentication_status" not in st.session_state:
+        st.session_state["authentication_status"] = None
+
     name, auth_status, username = authenticator.login("Login", "main")
     if auth_status:
         authenticator.logout("Logout", "sidebar")
