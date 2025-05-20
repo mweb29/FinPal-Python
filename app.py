@@ -63,9 +63,22 @@ if page == "Budget Setup":
         st.info("Enter an income above $0 to view federal tax bracket breakdown.")
 
     st.subheader("Set Monthly Budget Goals")
+    # Only define categories once
+    if "budget" not in st.session_state:
+        st.session_state.budget = {}
+    
     categories = ["Rent", "Groceries", "Dining Out", "Transportation", "Entertainment", "Utilities", "Insurance", "Subscriptions", "Other"]
+    
+    # Set each category only if it's not already present
     for cat in categories:
-        st.session_state.budget[cat] = st.number_input(f"{cat} Budget ($)", min_value=0, value=0, step=50)
+        if cat not in st.session_state.budget:
+            st.session_state.budget[cat] = 0
+    
+    # Then create input boxes without overwriting stored values
+    for cat in categories:
+        st.session_state.budget[cat] = st.sidebar.number_input(
+            f"{cat} Budget ($)", min_value=0, value=st.session_state.budget[cat], step=50
+        )
 
 elif page == "Track Expenses":
     st.title("Track Expenses & Upload Statements")
