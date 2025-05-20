@@ -77,6 +77,8 @@ def calculate_taxes(gross_income, state, nyc=False):
     net_income = gross_income - total_tax
 
     return {
+        "standard_deduction": STANDARD_DEDUCTION,
+        "taxable_income": taxable_income,
         "federal_breakdown": federal_breakdown,
         "net_income": net_income,
         "federal_tax": federal_tax,
