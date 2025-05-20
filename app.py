@@ -141,10 +141,13 @@ elif page == "Track Expenses":
     monthly_net_income = tax_summary.get("net_income", 0) / 12
     expected_savings = monthly_net_income - estimated_spend
     
-    st.metric("Expected Monthly Income", f"${monthly_net_income:,.2f}")
-    st.metric("Expected Monthly Savings", f"${expected_savings:,.2f}")
-    st.metric("Estimated Spend (Budgeted Total):", f"${estimated_spend:,.2f}")
-    st.metric("Total Monthly Expenses", f"${total_expenses:,.2f}")
+    col1, col2 = st.columns(2)
+    with col1:
+        st.metric("Expected Monthly Income", f"${monthly_net_income:,.2f}")
+        st.metric("Expected Monthly Savings", f"${expected_savings:,.2f}")
+    with col2:
+        st.metric("Estimated Spend (Budgeted Total):", f"${estimated_spend:,.2f}")
+        st.metric("Total Monthly Expenses", f"${total_expenses:,.2f}")
 
     
     st.subheader("Spending by Category vs Budget")
@@ -183,16 +186,17 @@ elif page == "Track Expenses":
     
     # Plot as a grouped, stacked bar chart by Type
     chart = alt.Chart(stacked_df).mark_bar().encode(
-        x=alt.X('Type:N', title=None),  # One bar for Budgeted, one for Actual
+        x=alt.X('Type:N', title=None),  # 'Budgeted' and 'Actual'
         y=alt.Y('Amount:Q', stack='zero', title='Total Spending ($)'),
-        color=alt.Color('Category:N', title='Category', scale=alt.Scale(scheme='category20')),
+        color=alt.Color(
+            'Category:N',
+            title='Category',
+            sort=category_order,  # <-- this is the key change
+            scale=alt.Scale(scheme='category20')
+        ),
         tooltip=['Category:N', 'Amount:Q']
-    ).properties(
-        title="Stacked Budget vs Actual Spending",
-        width=600,
-        height=400
-    )
-    
+    ).properties(width=600, height=400)
+        
     st.altair_chart(chart, use_container_width=True)
 
     st.subheader("Detailed Expenses")
