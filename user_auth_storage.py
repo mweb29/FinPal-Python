@@ -30,19 +30,17 @@ authenticator = stauth.Authenticate(
 )
 
 def login_user():
-    if "authentication_status" not in st.session_state:
-        st.session_state["authentication_status"] = None
-
     name, auth_status, username = authenticator.login("Login", "main")
 
-    # This avoids KeyError if session is cleared during logout
-    if st.session_state.get("authentication_status"):
+    # Only display sidebar and allow access if logged in
+    if auth_status:
         authenticator.logout("Logout", "sidebar")
-        st.sidebar.success(f"Welcome {st.session_state.get('name', name)}")
+        st.sidebar.success(f"Welcome {name}")
         return username
-    elif st.session_state.get("authentication_status") is False:
+    elif auth_status is False:
         st.error("Incorrect username or password.")
         st.stop()
     else:
         st.warning("Please enter your credentials.")
         st.stop()
+
