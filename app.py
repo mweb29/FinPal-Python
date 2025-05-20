@@ -48,7 +48,11 @@ if page == "Budget Setup":
     else:
         st.session_state.nyc_resident = False
 
-    tax_details = calculate_taxes(st.session_state.annual_income, state, nyc=nyc_resident)
+    tax_details = calculate_taxes(
+        gross_income=st.session_state.annual_income,
+        state=st.session_state.selected_state,
+        nyc=st.session_state.nyc_resident
+    )
     monthly_net_income = tax_details["net_income"] / 12
     st.session_state["tax_summary"] = tax_details
 
