@@ -25,8 +25,6 @@ credentials = {
 
 authenticator = stauth.Authenticate(
     credentials,
-    usernames,
-    hashed_pw,
     "finpal_cookie", "random_signature", cookie_expiry_days=30
 )
 
