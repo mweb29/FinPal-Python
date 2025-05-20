@@ -48,10 +48,7 @@ if "nyc_resident" not in st.session_state:
 
 if page == "Budget Setup":
     st.title("Budget Setup")
-
-    if page == "Budget Setup":
-    st.title("Budget Setup")
-
+    
     with st.form("budget_form"):
         income = st.number_input(
             "Enter your gross annual income ($):",
