@@ -130,14 +130,16 @@ elif page == "Track Expenses":
         st.success("Bank statement parsed and expenses added!")
 
     st.header("Expense Summary")
+    if st.session_state.budget:
+        estimated_spend = sum(st.session_state.budget.values())
     total_expenses = st.session_state.expenses["Amount"].sum()
     monthly_net_income = st.session_state.tax_summary["net_income"] / 12
-    savings = monthly_net_income - total_expenses
+    expected_savings = monthly_net_income - estimated_spend
 
+    st.metric("Expected Monthly Income", f"${monthly_net_income:,.2f}")
+    st.metric("Expected Monthly Savings", f"${expected_savings:,.2f}")
+    st.metric("Estimated Spend (Budgeted Total):", f"${estimated_spend:,.2f}")
     st.metric("Total Monthly Expenses", f"${total_expenses:,.2f}")
-    st.metric("Estimated Monthly Savings", f"${savings:,.2f}")
-
-    ### Working on
     
     st.subheader("Spending by Category vs Budget")
     # Create DataFrame from session state
