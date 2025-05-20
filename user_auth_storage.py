@@ -35,15 +35,14 @@ def login_user():
 
     name, auth_status, username = authenticator.login("Login", "main")
 
-    if auth_status:
+    # This avoids KeyError if session is cleared during logout
+    if st.session_state.get("authentication_status"):
         authenticator.logout("Logout", "sidebar")
-        st.sidebar.success(f"Welcome {name}")
+        st.sidebar.success(f"Welcome {st.session_state.get('name', name)}")
         return username
-
-    elif auth_status is False:
+    elif st.session_state.get("authentication_status") is False:
         st.error("Incorrect username or password.")
         st.stop()
     else:
         st.warning("Please enter your credentials.")
         st.stop()
-
