@@ -55,8 +55,12 @@ def save_user_data(username: str, data: Dict[str, Any]):
 def load_user_data(username: str) -> Dict[str, Any]:
     filepath = os.path.join(USER_DATA_DIR, f"{username}.json")
     if os.path.exists(filepath):
-        with open(filepath) as f:
-            return json.load(f)
+        try:
+            with open(filepath) as f:
+                return json.load(f)
+        except json.JSONDecodeError:
+            st.warning("Your saved data appears corrupted or empty. Loading defaults.")
+            return {}
     return {}
 
 # --- INITIALIZE SESSION STATE ---
