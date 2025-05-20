@@ -5,6 +5,7 @@ import json
 import os
 import pandas as pd
 from typing import Dict, Any
+from db_manager import save_user_data, load_user_data
 
 # --- CONFIGURATION ---
 USER_DATA_DIR = "user_data"
@@ -45,34 +46,6 @@ def login_user():
     else:
         st.warning("Please enter your credentials.")
         st.stop()
-
-# --- SAVE DATA ---
-def save_user_data(username: str, data: Dict[str, Any]):
-    os.makedirs(USER_DATA_DIR, exist_ok=True)
-    filepath = os.path.join(USER_DATA_DIR, f"{username}.json")
-    with open(filepath, "w") as f:
-        def convert(o):
-            if isinstance(o, pd.Timestamp):
-                return o.isoformat()
-            if isinstance(o, pd.DataFrame):
-                return o.to_dict()
-            if hasattr(o, "isoformat"):
-                return o.isoformat()
-            return str(o)
-
-        json.dump(data, f, default=convert)
-
-# --- LOAD DATA ---
-def load_user_data(username: str) -> Dict[str, Any]:
-    filepath = os.path.join(USER_DATA_DIR, f"{username}.json")
-    if os.path.exists(filepath):
-        try:
-            with open(filepath) as f:
-                return json.load(f)
-        except json.JSONDecodeError:
-            st.warning("Your saved data appears corrupted or empty. Loading defaults.")
-            return {}
-    return {}
 
 # --- SAVE STATE ---
 def persist_session(username: str):
