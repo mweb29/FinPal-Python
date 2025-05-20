@@ -4,25 +4,21 @@ import streamlit_authenticator as stauth
 import json
 import os
 import pandas as pd
+from streamlit_authenticator.utilities.hasher import Hasher
 from typing import Dict, Any
 from db_manager import save_user_data, load_user_data
 
-# --- CONFIGURATION ---
-USER_DATA_DIR = "user_data"
+CREDENTIALS_PATH = "user_data/credentials.json"
 
-# Example user credentials (hash these in production!)
-names = ["Michael", "Test User", "Victoria"]
-usernames = ["mweb", "test", "vcarl"]
-passwords = ["123", "testpass", "7890"]
+def load_credentials():
+    with open(CREDENTIALS_PATH, "r") as f:
+        return json.load(f)
 
-# --- HASH PASSWORDS ---
-hashed_pw = stauth.Hasher(passwords).generate()
-credentials = {
-    "usernames": {
-        u: {"name": n, "password": p}
-        for u, n, p in zip(usernames, names, hashed_pw)
-    }
-}
+def save_credentials(credentials):
+    with open(CREDENTIALS_PATH, "w") as f:
+        json.dump(credentials, f, indent=4)
+        
+credentials = load_credentials()
 
 authenticator = stauth.Authenticate(
     credentials,
