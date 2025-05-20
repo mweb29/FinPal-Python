@@ -49,26 +49,41 @@ if "nyc_resident" not in st.session_state:
 if page == "Budget Setup":
     st.title("Budget Setup")
 
-    st.session_state.annual_income = st.number_input(
-    "Enter your gross annual income ($):", min_value=0.0, value=st.session_state.annual_income
-    )
-    st.session_state.selected_state = st.selectbox(
-        "Select your state (for tax estimate):", US_STATE_CODES, index=US_STATE_CODES.index(st.session_state.selected_state)
-    )
-    if st.session_state.selected_state == "NY":
-        st.session_state.nyc_resident = st.checkbox(
-            "Check this if you live in NYC (3.876% city tax applies)",
-            value=st.session_state.nyc_resident
-        )
-    else:
-        st.session_state.nyc_resident = False
+    if page == "Budget Setup":
+    st.title("Budget Setup")
 
-    if st.session_state.annual_income and st.session_state.selected_state:
-        tax_details = calculate_taxes(
-            income=st.session_state.annual_income,
-            state=st.session_state.selected_state,
-            nyc_resident=st.session_state.nyc_resident
+    with st.form("budget_form"):
+        income = st.number_input(
+            "Enter your gross annual income ($):",
+            min_value=0.0,
+            value=st.session_state.annual_income
         )
+        state = st.selectbox(
+            "Select your state (for tax estimate):",
+            US_STATE_CODES,
+            index=US_STATE_CODES.index(st.session_state.selected_state)
+        )
+        nyc = False
+        if state == "NY":
+            nyc = st.checkbox(
+                "Check this if you live in NYC (3.876% city tax applies)",
+                value=st.session_state.nyc_resident
+            )
+        submitted = st.form_submit_button("Save and Estimate Taxes")
+
+    if submitted:
+        # Save inputs
+        st.session_state.annual_income = income
+        st.session_state.selected_state = state
+        st.session_state.nyc_resident = nyc
+
+        # Calculate and save taxes
+        st.session_state.tax_details = calculate_taxes(
+            income=income,
+            state=state,
+            nyc_resident=nyc
+        )
+        st.success("Tax estimate calculated and saved.")
         
     monthly_net_income = tax_details["net_income"] / 12
     st.session_state["tax_summary"] = tax_details
