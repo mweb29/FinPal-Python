@@ -1,21 +1,25 @@
 import pandas as pd
 
 STATE_BRACKETS_DF = pd.read_csv("normalized_state_brackets_2024.csv")
+# Standardize state names by removing periods, trimming spaces, and converting to uppercase for reliable matching
 STATE_BRACKETS_DF["State"] = STATE_BRACKETS_DF["State"].str.replace(".", "", regex=False).str.strip().str.upper()
 
-STATE_CODE_MAP = {
-    "Ala": "AL", "Alaska": "AK", "Ariz": "AZ", "Ark": "AR", "Calif": "CA", "Colo": "CO",
-    "Conn": "CT", "DC": "DC", "Del": "DE", "Fla": "FL", "Ga": "GA", "Hawaii": "HI", "Idaho": "ID",
-    "Ill": "IL", "Ind": "IN", "Iowa": "IA", "Kans": "KS", "Ky": "KY", "La": "LA", "Maine": "ME",
-    "Md": "MD", "Mass": "MA", "Mich": "MI", "Minn": "MN", "Miss": "MS", "Mo": "MO", "Mont": "MT",
-    "Neb": "NE", "Nev": "NV", "NH": "NH", "NJ": "NJ", "NM": "NM", "NY": "NY", "NC": "NC", "ND": "ND",
-    "Ohio": "OH", "Okla": "OK", "Ore": "OR", "Pa": "PA", "RI": "RI", "SC": "SC", "SD": "SD",
-    "Tenn": "TN", "Tex": "TX", "Utah": "UT", "Vt": "VT", "Va": "VA", "Wash": "WA", "W Va": "WV",
-    "Wis": "WI", "Wyo": "WY"
+# Reversed map: full uppercase names like N D to their USPS codes
+STATE_NAME_TO_CODE = {
+    "ALA": "AL", "ALASKA": "AK", "ARIZ": "AZ", "ARK": "AR", "CALIF": "CA", "COLO": "CO",
+    "CONN": "CT", "DC": "DC", "DEL": "DE", "FLA": "FL", "GA": "GA", "HAWAII": "HI", "IDAHO": "ID",
+    "ILL": "IL", "IND": "IN", "IOWA": "IA", "KANS": "KS", "KY": "KY", "LA": "LA", "MAINE": "ME",
+    "MD": "MD", "MASS": "MA", "MICH": "MI", "MINN": "MN", "MISS": "MS", "MO": "MO", "MONT": "MT",
+    "NEB": "NE", "NEV": "NV", "NH": "NH", "NJ": "NJ", "NM": "NM", "NY": "NY", "NC": "NC", "ND": "ND",
+    "OHIO": "OH", "OKLA": "OK", "ORE": "OR", "PA": "PA", "RI": "RI", "SC": "SC", "SD": "SD",
+    "TENN": "TN", "TEX": "TX", "UTAH": "UT", "VT": "VT", "VA": "VA", "WASH": "WA", "W VA": "WV",
+    "WIS": "WI", "WYO": "WY"
 }
+
 
 def calculate_taxes(gross_income, state, nyc=False):
     """Calculates federal, state, and NYC taxes and returns detailed breakdown."""
+    # These are the 2024 U.S. federal tax brackets for single filers
     federal_brackets = [
         (0, 11000, 0.10), (11000, 44725, 0.12), (44725, 95375, 0.22),
         (95375, 182100, 0.24), (182100, 231250, 0.32),
@@ -32,9 +36,14 @@ def calculate_taxes(gross_income, state, nyc=False):
                 break
         return tax
 
-    state_code = STATE_CODE_MAP.get(state, state)
-    state_df = STATE_BRACKETS_DF[STATE_BRACKETS_DF["State"] == state_code.upper()]
+    state_clean = state.upper().strip()
+    # Reverse the mapping so we can go from USPS code (e.g., 'NY') back to the normalized format used in the CSV (e.g., 'NEW YORK')
+    reverse_lookup = {v: k for k, v in STATE_NAME_TO_CODE.items()}
+    state_lookup = reverse_lookup.get(state_clean, state_clean)
 
+    state_df = STATE_BRACKETS_DF[STATE_BRACKETS_DF["State"] == state_lookup]
+
+    # Use default flat tax bracket if state is not found
     if state_df.empty:
         state_brackets = [(0, float('inf'), 0.04)]
     else:
@@ -48,7 +57,8 @@ def calculate_taxes(gross_income, state, nyc=False):
 
     federal_tax = apply_brackets(gross_income, federal_brackets)
     state_tax = apply_brackets(gross_income, state_brackets)
-    nyc_tax = gross_income * 0.03876 if nyc and state_code == "NY" else 0.0
+    # Add NYC tax if applicable
+    nyc_tax = gross_income * 0.03876 if nyc and state_clean == "NY" else 0.0
 
     total_tax = federal_tax + state_tax + nyc_tax
     net_income = gross_income - total_tax
@@ -60,6 +70,7 @@ def calculate_taxes(gross_income, state, nyc=False):
         "nyc_tax": nyc_tax,
         "total_tax": total_tax
     }
+
 
 def parse_bank_statement(file):
     try:
@@ -73,6 +84,7 @@ def parse_bank_statement(file):
         })[["Date", "Amount", "Category", "Description"]]
     except Exception as e:
         raise ValueError(f"Failed to parse bank statement: {e}")
+
 
 def categorize_expense(description):
     description = str(description).lower()
