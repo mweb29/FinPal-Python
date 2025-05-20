@@ -48,8 +48,12 @@ def login_user():
 def save_user_data(username: str, data: Dict[str, Any]):
     os.makedirs(USER_DATA_DIR, exist_ok=True)
     filepath = os.path.join(USER_DATA_DIR, f"{username}.json")
-    with open(filepath, "w") as f:
-        json.dump(data, f)
+    try:
+        with open(filepath, "w") as f:
+            json.dump(data, f)
+        st.sidebar.info(f"Data saved to {filepath}")
+    except Exception as e:
+        st.sidebar.error(f"Failed to save data: {e}")
 
 # --- LOAD DATA ---
 def load_user_data(username: str) -> Dict[str, Any]:
