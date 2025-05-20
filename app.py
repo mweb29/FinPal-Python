@@ -54,7 +54,7 @@ if page == "Budget Setup":
         federal_df = pd.DataFrame(tax_details["federal_breakdown"])
         federal_df = federal_df[["lower_bound", "upper_bound", "rate", "amount_taxed", "tax"]]
         federal_df.columns = ["From", "To", "Rate", "Amount Taxed", "Tax"]
-        st.markdown("#### Federal Tax Breakdown")
+        st.markdown("###### Federal Tax Breakdown")
         st.table(federal_df)
     else:
         st.markdown("#### Federal Tax Breakdown")
