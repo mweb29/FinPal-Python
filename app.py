@@ -10,17 +10,18 @@ st.set_page_config(page_title="FinPal Budget App", layout="wide")
 # Initialize the database
 init_db()
 
-# Check if the user is authenticated
-if "authentication_status" not in st.session_state:
-    st.session_state["authentication_status"] = None
-
-# If the user is not authenticated, prompt for login
-if st.session_state["authentication_status"] != True:
+# Show login and stop app if user is not authenticated
+if "authentication_status" not in st.session_state or st.session_state["authentication_status"] != True:
     username = login_user()
     st.stop()
 
-# Add this line to allow logout
+# Show logout button BEFORE doing anything else
 authenticator.logout("Logout", "sidebar")
+
+# 🔒 Guard against missing username (after logout)
+if "username" not in st.session_state or not st.session_state["username"]:
+    st.warning("You are logged out. Please refresh to log in again.")
+    st.stop()
 
 # If the user is authenticated, proceed with loading user data
 username = st.session_state["username"]
