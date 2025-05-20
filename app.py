@@ -50,11 +50,14 @@ if page == "Budget Setup":
     st.write(f"Net Monthly Income: ${monthly_net_income:,.2f}")
     
     # 🆕 Add this right below the tax numbers:
-    federal_df = pd.DataFrame(tax_details["federal_breakdown"])
-    federal_df = federal_df[["lower_bound", "upper_bound", "rate", "amount_taxed", "tax"]]
-    federal_df.columns = ["From", "To", "Rate", "Amount Taxed", "Tax"]
-    st.markdown("#### Federal Tax Breakdown")
-    st.table(federal_df)
+    if tax_details["federal_breakdown"]:
+        federal_df = pd.DataFrame(tax_details["federal_breakdown"])
+        federal_df = federal_df[["lower_bound", "upper_bound", "rate", "amount_taxed", "tax"]]
+        federal_df.columns = ["From", "To", "Rate", "Amount Taxed", "Tax"]
+        st.markdown("#### Federal Tax Breakdown")
+        st.table(federal_df)
+    else:
+        st.info("Enter an income above $0 to view federal tax bracket breakdown.")
 
     st.subheader("Set Monthly Budget Goals")
     categories = ["Rent", "Groceries", "Dining Out", "Transportation", "Entertainment", "Utilities", "Insurance", "Subscriptions", "Other"]
