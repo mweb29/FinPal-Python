@@ -44,8 +44,8 @@ if page == "Budget Setup":
     st.subheader("Tax Breakdown")
     st.subheader("Federal Tax Breakdown")
     for row in tax_details["federal_breakdown"]:
-    st.markdown(
-        f"- {row['range']} at {row['rate']} → Taxed {row['amount_taxed']} = **{row['tax']}**"
+        st.markdown(
+            f"- {row['range']} at {row['rate']} → Taxed {row['amount_taxed']} = **{row['tax']}**"
     )
     st.write(f"Federal Tax: ${tax_details['federal_tax']:,.2f}")
     st.write(f"State Tax: ${tax_details['state_tax']:,.2f}")
