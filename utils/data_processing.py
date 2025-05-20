@@ -69,7 +69,7 @@ def calculate_taxes(gross_income, state, nyc=False):
         ]
 
     federal_tax, federal_breakdown = apply_brackets(taxable_income, federal_brackets)
-    state_tax, _ = apply_brackets(taxable_income, state_brackets)
+    state_tax, state_breakdown = apply_brackets(taxable_income, state_brackets)
     # Add NYC tax if applicable
     nyc_tax = taxable_income * 0.03876 if nyc and state_clean == "NY" else 0.0
 
@@ -77,6 +77,7 @@ def calculate_taxes(gross_income, state, nyc=False):
     net_income = gross_income - total_tax
 
     return {
+        "state_breakdown": state_breakdown,
         "standard_deduction": STANDARD_DEDUCTION,
         "taxable_income": taxable_income,
         "federal_breakdown": federal_breakdown,
