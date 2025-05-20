@@ -19,7 +19,6 @@ def save_credentials(credentials):
         json.dump(credentials, f, indent=4)
         
 credentials = load_credentials()
-print("Loaded credentials:", credentials)
 
 authenticator = stauth.Authenticate(
     credentials,
