@@ -4,7 +4,6 @@ import os
 import altair as alt
 import plotly.express as px
 from utils.data_processing import calculate_taxes, categorize_expense, parse_bank_statement
-from utils.gamification import calculate_points, get_achievements
 
 st.set_page_config(page_title="FinPal Budget App", layout="wide")
 
@@ -188,22 +187,5 @@ elif page == "Track Expenses":
     
     st.altair_chart(chart, use_container_width=True)
 
-
-
     st.subheader("Detailed Expenses")
     st.dataframe(st.session_state.expenses)
-
-
-    ###
-    
-    # Gamification
-    points = calculate_points(st.session_state.expenses, st.session_state.budget)
-    achievements = get_achievements(points)
-
-    st.sidebar.header("Gamification")
-    st.sidebar.metric("Points", points)
-    for a in achievements:
-        st.sidebar.write(f"🏆 {a}")
-
-    st.markdown("---")
-    st.markdown("💡 **Tip:** The more detailed your descriptions and the closer you stay to your budget, the more points you'll earn!")
