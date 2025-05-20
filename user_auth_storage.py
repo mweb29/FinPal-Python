@@ -11,9 +11,9 @@ from db_manager import save_user_data, load_user_data
 USER_DATA_DIR = "user_data"
 
 # Example user credentials (hash these in production!)
-names = ["Michael", "Test User"]
-usernames = ["mweb", "test"]
-passwords = ["123", "testpass"]
+names = ["Michael", "Test User", "Victoria"]
+usernames = ["mweb", "test", "vcarl"]
+passwords = ["123", "testpass", "7890"]
 
 # --- HASH PASSWORDS ---
 hashed_pw = stauth.Hasher(passwords).generate()
