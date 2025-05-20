@@ -57,6 +57,7 @@ if page == "Budget Setup":
         st.markdown("#### Federal Tax Breakdown")
         st.table(federal_df)
     else:
+        st.markdown("#### Federal Tax Breakdown")
         st.info("Enter an income above $0 to view federal tax bracket breakdown.")
 
     st.subheader("Set Monthly Budget Goals")
