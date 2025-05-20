@@ -1,4 +1,5 @@
 import streamlit as st
+st.set_page_config(page_title="FinPal Budget App", layout="wide")
 import pandas as pd
 import os
 import altair as alt
@@ -12,8 +13,6 @@ username = login_user()
 # Load their saved data
 user_data = load_user_data(username) 
 initialize_session_from_user_data(user_data)
-
-st.set_page_config(page_title="FinPal Budget App", layout="wide")
 
 st.sidebar.title("FinPal Setup")
 
