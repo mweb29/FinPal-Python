@@ -34,7 +34,7 @@ def calculate_taxes(gross_income, state, nyc=False):
                 taxed = min(income, upper) - lower
                 segment_tax = taxed * rate
                 breakdown.append({
-                    "range": f"${lower:,.0f} to ${min(income, upper):,.0f}",
+                    "range": f"${lower:,.0f} to ${min(income, upper):,}",
                     "rate": f"{rate*100:.1f}%",
                     "amount_taxed": f"${taxed:,.2f}",
                     "tax": f"${segment_tax:,.2f}"
